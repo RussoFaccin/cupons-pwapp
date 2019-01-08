@@ -1,0 +1,298 @@
+/*
+| ================================================================================
+|   GENERAL
+| ================================================================================
+*/
+
+/* ========== FONTES ========== */
+
+@font-face {
+    font-family: 'Proxima Nova - regular';
+    src: url(../fonts/proximanova-regular-webfont.woff);
+}
+
+@font-face {
+    font-family: 'Proxima Nova - bold';
+    src: url(../fonts/proximanova-bold-webfont.woff);
+}
+
+@font-face {
+    font-family: 'Proxima Nova - extrabold';
+    src: url(../fonts/proximanova-extrabold-webfont.woff);
+}
+
+/* ========== STRUCTURE ========== */
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: 'Proxima Nova - regular';
+}
+
+button:focus {
+    outline: none;
+}
+
+/*
+| ================================================================================
+|   STYLES - APP SHELL
+| ================================================================================
+*/
+
+/* ========== GENERAL VALUES ========== */
+
+:root {
+    --mainColor: #3F51B5;
+    --secondaryColor: #6a0709;
+    --headerHeight: 56px;
+    --bodyPadding: 10px 10px;
+}
+
+/* ========== CONTAINER ========== */
+
+.appContainer {
+    width: 100%;
+    height: 100%;
+}
+
+/* ========== APP HEADER ========== */
+
+.m-appHeader {
+    position: relative;
+    background-color: var(--mainColor);
+    height: var(--headerHeight);
+}
+
+.m-appHeader__logo {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    margin: 0 auto;
+    /* background-image: url("../img/logo_habibs_type.svg"); */
+    background-position: center;
+    background-size: auto 60%;
+    background-repeat: no-repeat;
+}
+
+.m-appHeader__link {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.m-appHeader__menuHandle {
+    position: absolute;
+    width: 50px;
+    height: 100%;
+    background-image: url("../img/menu-open.svg");
+    background-position: center;
+    background-size: 65% auto;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: 0;
+}
+
+.m-appHeader__menuHandle.--active {
+    background-image: url("../img/left-arrow.svg");
+}
+
+/* ========== APP BODY ========== */
+
+.m-appBody {
+    height: calc(100vh - var(--headerHeight));
+    overflow: hidden scroll;
+    padding: var(--bodyPadding);
+}
+
+/* ========== NAVIGATION DRAWER ========== */
+
+.m-navigationDrawer {
+    font-family: 'Proxima Nova - regular';
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+
+.m-navigationDrawer__content {
+    position: relative;
+    width: 90%;
+    height: 100%;
+    background-color: var(--mainColor);
+}
+
+.m-navigationDrawer__linksList {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+}
+
+.m-navigationDrawer__itemButton {
+    background-color: transparent;
+    border: 0;
+    color: #FFF;
+}
+
+.m-navigationDrawer__btnClose {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 4px 14px;
+    background-color: transparent;
+    border: 0;
+    color: #FFF;
+}
+
+.toggleDrawer-enter-active, .toggleDrawer-leave-active {
+    transition: all .15s;
+}
+
+.toggleDrawer-enter, .toggleDrawer-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+    transform: translateX(-100%);
+}
+
+/*
+| ================================================================================
+|   STYLES - SPLASH SCREEN
+| ================================================================================
+*/
+
+.splashScreen {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--mainColor);
+    width: 100%;
+    height: 100%;
+    top: 0;
+}
+
+.toggleSplash-enter-active, .toggleSplash-leave-active {
+    transition: all .5s ease-out;
+}
+
+.toggleSplash-enter, .toggleSplash-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+}
+
+/*
+| ================================================================================
+|   STYLES - OFERTAS LIST
+| ================================================================================
+*/
+
+.m-ofertasList {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.m-ofertasList__thumb {
+    width: 100%;
+    height: auto;
+}
+
+.m-ofertasList__item {
+    position: relative;
+    font-family: 'Proxima Nova - regular';
+}
+
+.m-ofertasList__item:not(:first-child):not(:last-child) {
+    margin: 20px 0;
+}
+
+.m-ofertasList__description {
+    position: absolute;
+    top: 4vw;
+    left: 3.5vw;
+    font-size: 2.65vw;
+    line-height: 2.65vw;
+    width: 62%;
+}
+
+.m-ofertasList__preco {
+    font-family: 'Proxima Nova - bold';
+    display: block;
+    font-size: 5vw;
+    padding-top: 2vw;
+    color: #eb1e23;
+}
+
+.toggleOffer-enter-active, .toggleOffer-leave-active {
+    transition: all .15s;
+}
+
+.toggleOffer-enter, .toggleOffer-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    transform: translateX(-100%);
+}
+
+/*
+| ================================================================================
+|   STYLES - OFERTA DETAIL
+| ================================================================================
+*/
+
+.m-offerDetail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    top: var(--headerHeight);
+    background-color: #FFF;
+    padding: var(--bodyPadding);
+}
+
+.m-offerDetail__code {
+    background-color: var(--secondaryColor);
+    color: #FFF;
+    font-family: 'Proxima Nova - extrabold';
+    font-size: 10vw;
+    padding: 0 10vw;
+}
+
+/*
+| ================================================================================
+|   STYLES - APP TOAST
+| ================================================================================
+*/
+
+.m-appToast {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: #FFF;
+    text-align: center;
+    font-family: 'Proxima Nova - regular';
+    font-size: 4vw;
+    padding: 3.5vw;
+}
+
+.toggleToast-enter-active, .toggleToast-leave-active {
+    transition: all .15s ease-out;
+}
+
+.toggleToast-enter, .toggleToast-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    transform: translateY(100%);
+}
+
+/*
+| ================================================================================
+|   UTILS
+| ================================================================================
+*/
+
+.text-hide {
+    font: 0/0 a;
+    color: transparent;
+    text-shadow: none;
+    background-color: transparent;
+    border: 0;
+  }

@@ -1,0 +1,6 @@
+# File System
+.DS_Store
+# NPM
+node_modules/
+# Dist folder
+dist/
