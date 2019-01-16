@@ -7,11 +7,11 @@ if ('serviceWorker' in navigator) {
 }
 
 let Categories = {
+    TODAS: 0,
     COMBOS: 1,
     BIBSFIHAS: 2,
     SALGADOS: 3
 }
-
 
 /*
 | ================================================================================
@@ -24,7 +24,7 @@ Vue.component('appHeader', {
         <div class="m-appHeader">
             <button class="m-appHeader__menuHandle" :class="{'--active': modifier}" v-on:click.stop.prevent="onToggleDrawer"></button>
             <h1 class="m-appHeader__logo text-hide">
-                <a href="./" class="m-appHeader__link">Habib's Cupons</a>
+                <a href="./" class="m-appHeader__link" v-on:click.prevent>Habib's Cupons</a>
             </h1>
         </div>
     `,
@@ -149,7 +149,9 @@ Vue.component('splashScreen', {
 var app = new Vue({
     el: '.appRoot',
     data: {
+        API_KEY: 'AIzaSyDFOzA7-cOFg0rhq_cuwv0PFiIGZwaOUqo',
         categories: [
+            {name: 'Todas', index: Categories.TODAS},
             {name: 'Combos', index: Categories.COMBOS},
             {name: 'Bib\'sfihas', index: Categories.BIBSFIHAS},
             {name: 'Salgados', index: Categories.SALGADOS}
@@ -172,18 +174,26 @@ var app = new Vue({
                 this.isOfferSelected = !this.isOfferSelected
             }
         },
+        showToast(message, lifeTime = 0) {
+            this.toastMessage = message;
+            this.isToastActive = true;
+            setTimeout(() => {
+                this.isToastActive = false;
+            }, lifeTime)
+        },
         selectOffer(offer) {
             this.isOfferSelected = true;
             this.selectedOffer = offer;
         },
         checkConnection() {
-            if (!navigator.onLine) {
-                this.isToastActive = true;
-                this.toastMessage = 'You are offline.';
-                setTimeout(() => {
-                    this.isToastActive = false;
-                }, 2000);
-            }
+            let self = this;
+            return new Promise((resolve, reject) => {
+                if (navigator.onLine) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            });
         },
         selectCategory(categoryId) {
             this.filterCategory(categoryId);
@@ -193,28 +203,51 @@ var app = new Vue({
                 return item.categoria == index;
             });
             this.filteredOfertas = tmpOffers;
+
+            if (index == Categories.TODAS) {
+                this.filteredOfertas = this.ofertas;
+            }
+
             this.toggleDrawer();
         },
         getGeo() {
             var geo_options = {
-                enableHighAccuracy: true, 
+                enableHighAccuracy: false, 
                 maximumAge        : 30000, 
                 timeout           : 27000
             };
-            navigator.geolocation.getCurrentPosition(this._geo_success, this._geo_error, geo_options);
+            return new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    console.log('POSITION: ', position.coords);
+                    let location = await this.getAddress(position.coords.latitude, position.coords.longitude);
+                    console.log('LOCATION: ', location);
+                    resolve(position);
+                }, (err) => {
+                    reject(err);
+                }, geo_options);
+            });
         },
-        _geo_success(position) {
-            console.log('POSITION: ', position);
-            setTimeout(() => {
-                this.isLoading = false;
-            }, 2000);
-        },
-        _geo_error(err) {
-            console.log('ERROR: ', err);
+        getAddress(latitude, longitude) {
+            let APIUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${this.API_KEY}`;
+            return new Promise((resolve, reject) => {
+                fetch(APIUrl).then(response => {
+                    response.json()
+                    .then(data => {
+                        let location = {
+                            Endereço: data.results[0].formatted_address,
+                            Cidade: data.results[0].address_components[4].long_name,
+                            Estado: data.results[0].address_components[4].short_name
+                        };
+                        resolve(location);
+                    }).catch(err => {
+                        reject(err)
+                    })
+                })
+            })
         }
     },
     created() {
-        fetch('../data/ofertas.json')
+        fetch('../data/ofertas.json', {mode: 'cors'})
         .then(result => {
             result.json()
             .then(data => {
@@ -223,9 +256,14 @@ var app = new Vue({
             })
         })
     },
-    mounted() {
-        this.checkConnection();
-        this.getGeo();
+    async mounted() {
+        if(await this.checkConnection()) {
+            await this.getGeo();
+        } else {
+            this.showToast('You are offline.', 3000);
+        }
+
+        this.isLoading = false;
     },
     template: `
         <div class="appContainer">
